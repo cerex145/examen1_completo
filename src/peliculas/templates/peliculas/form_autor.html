@@ -1,0 +1,169 @@
+{% extends 'peliculas/base.html' %}
+
+{% block title %}{{ titulo }} - CineManager{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow">
+            <div class="card-header bg-success text-white">
+                <h4 class="card-title mb-0">
+                    <i class="bi bi-{% if autor %}pencil{% else %}person-plus{% endif %} me-2"></i>
+                    {{ titulo }}
+                </h4>
+            </div>
+            <div class="card-body">
+                <form method="post" novalidate>
+                    {% csrf_token %}
+                    
+                    <!-- Nombre -->
+                    <div class="mb-3">
+                        <label for="{{ form.nombre.id_for_label }}" class="form-label">
+                            <i class="bi bi-person me-1"></i>{{ form.nombre.label }}
+                        </label>
+                        {{ form.nombre }}
+                        {% if form.nombre.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.nombre.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                        <div class="form-text">
+                            Ingresa el nombre completo del director
+                        </div>
+                    </div>
+
+                    <!-- Nacionalidad -->
+                    <div class="mb-4">
+                        <label for="{{ form.nacionalidad.id_for_label }}" class="form-label">
+                            <i class="bi bi-flag me-1"></i>{{ form.nacionalidad.label }}
+                        </label>
+                        {{ form.nacionalidad }}
+                        {% if form.nacionalidad.errors %}
+                            <div class="invalid-feedback d-block">
+                                {% for error in form.nacionalidad.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                        <div class="form-text">
+                            Ejemplos: Estadounidense, Mexicano, Español, Francés
+                        </div>
+                    </div>
+
+                    <!-- Botones -->
+                    <div class="d-flex justify-content-between">
+                        <a href="{% url 'listar_autores' %}" class="btn btn-secondary">
+                            <i class="bi bi-arrow-left me-1"></i>Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-success">
+                            <i class="bi bi-{% if autor %}check-circle{% else %}person-plus{% endif %} me-1"></i>
+                            {% if autor %}Actualizar{% else %}Crear{% endif %} Director
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Información adicional para edición -->
+        {% if autor %}
+        <div class="card shadow mt-3">
+            <div class="card-header">
+                <h6 class="card-title mb-0">
+                    <i class="bi bi-info-circle me-2"></i>Información del Director
+                </h6>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-6">
+                        <small class="text-muted d-block">Películas Dirigidas</small>
+                        <strong class="h5">{{ autor.peliculas.count }}</strong>
+                    </div>
+                    <div class="col-6">
+                        <small class="text-muted d-block">Nacionalidad Actual</small>
+                        <strong class="h6">{{ autor.nacionalidad }}</strong>
+                    </div>
+                </div>
+                
+                {% if autor.peliculas.exists %}
+                <hr>
+                <h6 class="text-muted mb-2">Películas dirigidas:</h6>
+                <ul class="list-unstyled mb-0">
+                    {% for pelicula in autor.peliculas.all|slice:":5" %}
+                        <li class="small mb-1">
+                            <i class="bi bi-film me-1"></i>
+                            <a href="{% url 'detalle_pelicula' pelicula.pk %}" class="text-decoration-none">
+                                {{ pelicula.titulo }}
+                            </a>
+                            <span class="text-muted">({{ pelicula.estreno|date:"Y" }})</span>
+                        </li>
+                    {% endfor %}
+                    {% if autor.peliculas.count > 5 %}
+                        <li class="small text-muted">
+                            <i class="bi bi-three-dots me-1"></i>
+                            y {{ autor.peliculas.count|add:"-5" }} más...
+                        </li>
+                    {% endif %}
+                </ul>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Validación del formulario
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.querySelector('form');
+    const nombreInput = document.getElementById('{{ form.nombre.id_for_label }}');
+    const nacionalidadInput = document.getElementById('{{ form.nacionalidad.id_for_label }}');
+
+    // Validación en tiempo real
+    function validateField(field) {
+        if (field.value.trim() === '') {
+            field.classList.add('is-invalid');
+            field.classList.remove('is-valid');
+        } else {
+            field.classList.remove('is-invalid');
+            field.classList.add('is-valid');
+        }
+    }
+
+    nombreInput.addEventListener('blur', () => validateField(nombreInput));
+    nacionalidadInput.addEventListener('blur', () => validateField(nacionalidadInput));
+
+    // Capitalizar primera letra
+    function capitalizeFirstLetter(field) {
+        field.addEventListener('blur', function() {
+            if (this.value) {
+                this.value = this.value.charAt(0).toUpperCase() + this.value.slice(1);
+            }
+        });
+    }
+
+    capitalizeFirstLetter(nombreInput);
+    capitalizeFirstLetter(nacionalidadInput);
+
+    // Validación antes del envío
+    form.addEventListener('submit', function(e) {
+        let isValid = true;
+        
+        [nombreInput, nacionalidadInput].forEach(field => {
+            if (field.value.trim() === '') {
+                field.classList.add('is-invalid');
+                isValid = false;
+            }
+        });
+
+        if (!isValid) {
+            e.preventDefault();
+            alert('Por favor, completa todos los campos requeridos.');
+        }
+    });
+});
+</script>
+{% endblock %}

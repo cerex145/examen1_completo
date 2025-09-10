@@ -1,0 +1,128 @@
+{% extends 'peliculas/base.html' %}
+
+{% block title %}{{ pelicula.titulo }} - CineManager{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h2 class="card-title mb-0">
+                        <i class="bi bi-film me-2"></i>{{ pelicula.titulo }}
+                    </h2>
+                    <div>
+                        <a href="{% url 'editar_pelicula' pelicula.pk %}" class="btn btn-light btn-sm">
+                            <i class="bi bi-pencil me-1"></i>Editar
+                        </a>
+                        <a href="{% url 'eliminar_pelicula' pelicula.pk %}" class="btn btn-outline-light btn-sm">
+                            <i class="bi bi-trash me-1"></i>Eliminar
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-8">
+                        <!-- Información de la película -->
+                        <h4 class="mb-3">Información de la Película</h4>
+                        
+                        <div class="mb-3">
+                            <p class="mb-2">
+                                <i class="bi bi-film me-2 text-primary"></i>
+                                <strong>Título:</strong> {{ pelicula.titulo }}
+                            </p>
+                            <p class="mb-2">
+                                <i class="bi bi-calendar3 me-2 text-primary"></i>
+                                <strong>Fecha de Estreno:</strong> {{ pelicula.estreno|date:"d F Y" }}
+                            </p>
+                            <p class="mb-2">
+                                <i class="bi bi-tag me-2 text-primary"></i>
+                                <strong>Género:</strong> 
+                                <span class="badge bg-secondary">{{ pelicula.genero }}</span>
+                            </p>
+                        </div>
+
+                        <!-- Información del director -->
+                        <h4 class="mb-3 mt-4">Director</h4>
+                        <div class="card bg-light">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="mb-1">
+                                            <i class="bi bi-person-badge me-1"></i>
+                                            {{ pelicula.autor.nombre }}
+                                        </h6>
+                                        <p class="mb-0 text-muted">
+                                            <i class="bi bi-globe me-1"></i>{{ pelicula.autor.nacionalidad }}
+                                        </p>
+                                    </div>
+                                    <a href="{% url 'detalle_autor' pelicula.autor.pk %}" class="btn btn-outline-primary btn-sm">
+                                        <i class="bi bi-eye me-1"></i>Ver Perfil
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <!-- Panel de estadísticas -->
+                        <div class="card bg-primary text-white">
+                            <div class="card-body text-center">
+                                <i class="bi bi-calendar-check display-4 mb-3"></i>
+                                <h5>Año de Estreno</h5>
+                                <h2>{{ pelicula.estreno.year }}</h2>
+                            </div>
+                        </div>
+
+                        <!-- Otras películas del mismo director -->
+                        {% if pelicula.autor.peliculas.count > 1 %}
+                            <div class="card mt-3">
+                                <div class="card-header">
+                                    <h6 class="card-title mb-0">
+                                        <i class="bi bi-collection-play me-1"></i>
+                                        Otras películas del director
+                                    </h6>
+                                </div>
+                                <div class="card-body">
+                                    {% for otra_pelicula in pelicula.autor.peliculas.all %}
+                                        {% if otra_pelicula.pk != pelicula.pk %}
+                                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                                <div>
+                                                    <small class="fw-bold">{{ otra_pelicula.titulo }}</small><br>
+                                                    <small class="text-muted">{{ otra_pelicula.estreno.year }} - {{ otra_pelicula.genero }}</small>
+                                                </div>
+                                                <a href="{% url 'detalle_pelicula' otra_pelicula.pk %}" class="btn btn-outline-primary btn-sm">
+                                                    <i class="bi bi-eye"></i>
+                                                </a>
+                                            </div>
+                                            {% if not forloop.last %}<hr class="my-2">{% endif %}
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Footer con botones de navegación -->
+            <div class="card-footer bg-light">
+                <div class="d-flex justify-content-between">
+                    <a href="{% url 'listar_peliculas' %}" class="btn btn-secondary">
+                        <i class="bi bi-arrow-left me-2"></i>Volver al Listado
+                    </a>
+                    <div>
+                        <a href="{% url 'editar_pelicula' pelicula.pk %}" class="btn btn-warning me-2">
+                            <i class="bi bi-pencil me-1"></i>Editar Película
+                        </a>
+                        <a href="{% url 'crear_pelicula' %}" class="btn btn-primary">
+                            <i class="bi bi-plus-circle me-1"></i>Nueva Película
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
