@@ -1,0 +1,27 @@
+{% extends 'peliculas/base.html' %}
+
+{% block title %}Eliminar Película - CineManager{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow border-danger">
+            <div class="card-header bg-danger text-white">
+                <h4 class="card-title mb-0">
+                    <i class="bi bi-exclamation-triangle me-2"></i>
+                    Confirmar Eliminación
+                </h4>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-warning">
+                    <i class="bi bi-info-circle me-2"></i>
+                    <strong>¡Atención!</strong> Esta acción no se puede deshacer.
+                </div>
+
+                <div class="text-center mb-4">
+                    <i class="bi bi-film display-1 text-danger"></i>
+                </div>
+
+                <h5 class="text-center mb-3">¿Estás seguro de que deseas eliminar esta película?</h5>
+
+                <!-- Información de la película -->
