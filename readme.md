@@ -5,15 +5,14 @@
 Sistema web desarrollado en Django para administrar una colección de películas y sus directores. Permite realizar operaciones CRUD completas en ambas entidades con búsqueda integrada.
 
 ### Funcionalidades
-- Listado de películas (2 pts)
-- Creación de películas (2 pts) 
-- Edición de películas (2 pts)
-- Eliminación de películas (2 pts)
-- Buscador de películas por título, género o director (3 pts)
-- Relación películas-directores (3 pts)
-- CRUD básico de directores (2 pts)
+- Listado de películas 
+- Creación de películas 
+- Edición de películas 
+- Eliminación de películas 
+- Buscador de películas por título, género o director 
+- Relación películas-directores 
+- CRUD básico de directores 
 
-**Total: 16 puntos**
 
 ## Tecnologías Utilizadas
 
@@ -58,13 +57,9 @@ Sistema web desarrollado en Django para administrar una colección de películas
 5. **Acceder**
    - URL: http://127.0.0.1:8000
 
-## Estructura del Proyecto
+## Estructura del Proyecto (peliculas) oñoooooo
 
-```
-src/
-├── config/
-│   ├── settings.py
-│   └── urls.py
+
 ├── peliculas/
 │   ├── templates/peliculas/
 │   │   ├── base.html
@@ -117,18 +112,7 @@ class Peliculas(models.Model):
 - Confirmación de eliminación
 - Mensajes de éxito/error
 
-## Solución de Problemas
 
-**Error "Template Not Found":**
-1. Crear carpeta `templates/peliculas/` en la app
-2. Verificar que todos los archivos HTML existen
-3. Comprobar configuración en settings.py
-
-**Error de base de datos:**
-```bash
-python manage.py makemigrations
-python manage.py migrate
-```
 
 ## Uso
 
@@ -137,7 +121,3 @@ python manage.py migrate
 3. **Búsqueda**: Usar la barra de búsqueda para filtrar contenido
 4. **Navegación**: Enlaces entre películas y directores relacionados
 
-## Autor
-
-[Tu Nombre Completo]
-Septiembre 2025
